@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Refeições</title>
+<style>
+  /* Adicione estilos CSS aqui */
+  body {
+    font-family: Arial, sans-serif;
+  }
+  h1 {
+    color: #333;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  input[type="checkbox"] {
+    margin-right: 5px;
+  }
+</style>
+</head>
+<body>
+  <h1>Registro de Refeições</h1>
+  
+  <label for="meals">Escolha uma refeição:</label>
+  <select id="meals">
+    <option value="dejejum">Dejejum</option>
+    <option value="pre-treino-suplemento">Pre treino (suplemento)</option>
+    <option value="pre-treino">Pré-treino</option>
+    <option value="cafe-da-manha">Café da manhã</option>
+    <option value="almoco">Almoço</option>
+    <option value="lanche-tarde">Lanche da tarde</option>
+    <option value="janta">Janta</option>
+    <option value="ceia">Ceia</option>
+    <option value="extra">Extra</option>
+  </select>
+  
+  <h2>Alimentos Consumidos</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Alimentos</th>
+        <th>GM/LT</th>
+        <th>Observações</th>
+        <th>Consumido</th>
+      </tr>
+    </thead>
+    <tbody id="mealDetails">
+      <!-- Detalhes das refeições serão adicionados aqui dinamicamente -->
+    </tbody>
+  </table>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const mealsSelect = document.getElementById("meals");
+      const mealDetailsTable = document.getElementById("mealDetails");
+      const mealStatus = {}; // Armazenar o status dos checkboxes
+      
+      mealsSelect.addEventListener("change", function() {
+        const selectedMeal = mealsSelect.value;
+        mealDetailsTable.innerHTML = ""; // Limpa a tabela de detalhes
+        const mealData = getMealData(selectedMeal); // Função que obtém os detalhes da refeição
+        
+        mealData.forEach(data => {
+          const row = document.createElement("tr");
+          const foodCell = document.createElement("td");
+          const gmLtCell = document.createElement("td");
+          const observationsCell = document.createElement("td");
+          const consumedCell = document.createElement("td");
+          
+          foodCell.textContent = data.food;
+          gmLtCell.textContent = data.gmLt;
+          observationsCell.textContent = data.observations;
+          
+          const consumedCheckbox = document.createElement("input");
+          consumedCheckbox.type = "checkbox";
+          consumedCheckbox.addEventListener("change", function() {
+            // Atualizar o status do checkbox ao ser clicado
+            mealStatus[data.food] = consumedCheckbox.checked;
+          });
+          
+          // Restaurar o status do checkbox
+          consumedCheckbox.checked = mealStatus[data.food] || false;
+          
+          consumedCell.appendChild(consumedCheckbox);
+          
+          row.appendChild(foodCell);
+          row.appendChild(gmLtCell);
+          row.appendChild(observationsCell);
+          row.appendChild(consumedCell);
+          
+          mealDetailsTable.appendChild(row);
+        });
+      });
+      
+      // Função simulada para retornar os detalhes da refeição selecionada
+      function getMealData(selectedMeal) {
+        // Dados reais para cada refeição...
+        const mealData = {
+          "dejejum": [
+            { food: "Água", gmLt: "500ml", observations: "" },
+            { food: "Ioimbina", gmLt: "5mg", observations: "" }
+          ],
+          "pre-treino-suplemento": [
+            { food: "O que eu estiver tomando", gmLt: "", observations: "" }
+          ],
+          "pre-treino": [
+            { food: "Aveia", gmLt: "50g", observations: "" },
+            { food: "Banana", gmLt: "120g", observations: "" },
+            { food: "Whey", gmLt: "45g", observations: "" }
+          ],
+          "cafe-da-manha": [
+            { food: "Pão integral", gmLt: "4 fatias", observations: "" },
+            { food: "Omelete", gmLt: "3 ovos", observations: "" },
+            { food: "Verduras", gmLt: "A vontade", observations: "" },
+            { food: "Iogurte Semi desnatado", gmLt: "200ml", observations: "" },
+            { food: "Mamão", gmLt: "200g", observations: "" },
+            { food: "Vitamina C", gmLt: "1g", observations: "" }
+          ],
+          "almoco": [
+            { food: "Arroz Ou macarrão", gmLt: "200g", observations: "" },
+            { food: "Frango ou carne", gmLt: "150g", observations: "" },
+            { food: "Salada a vontade", gmLt: "", observations: "" },
+            { food: "Multivitamínico", gmLt: "1 dose", observations: "" },
+            { food: "Cafeína", gmLt: "200mg", observations: "" },
+            { food: "Ioimbina", gmLt: "5mg", observations: "" }
+          ],
+          "lanche-tarde": [
+            { food: "Arroz", gmLt: "150g", observations: "" },
+            { food: "Frango ou peixe", gmLt: "150g", observations: "" }
+          ],
+          "janta": [
+            { food: "Arroz ou batata", gmLt: "150g ou 200g", observations: "Inglesa" },
+            { food: "Frango ou carne", gmLt: "150g", observations: "" },
+            { food: "Salada crua A vontade Ou legumes", gmLt: "200g", observations: "" }
+          ],
+          "ceia": [
+            { food: "Frutas", gmLt: "300g", observations: "" },
+            { food: "Iogurte Semi desnatado", gmLt: "200ml", observations: "" },
+            { food: "Creatina", gmLt: "5g", observations: "" },
+            { food: "Ômega 3", gmLt: "3g", observations: "" }
+          ],
+          "extra": [
+            { food: "Frutas", gmLt: "300g", observations: "" },
+            { food: "Iogurte Semi desnatado", gmLt: "200ml", observations: "" },
+            { food: "Creatina", gmLt: "5g", observations: "" },
+            { food: "Ômega 3", gmLt: "3g", observations: "" }
+          ]
+        };
+    return mealData[selectedMeal] || [];
+  }
+});
+  </script>
+  <!-- ... código HTML anterior ... -->
+</table>
+<div>
+  <h2>Informações Adicionais</h2>
+  <p>Cardio 60 minutos por dia</p>
+  <p>Ingerir 6 litros de água ao dia (podendo exceder para mais)</p>
+  <p>Café sem açúcar à vontade (podendo adoçar com estévia)</p>
+
+  <h3>Protocolo hormonal</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Quantidade</th>
+        <th>Frequência</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1ml Enantato de testosterona</td>
+        <td>Segunda / quinta</td>
+      </tr>
+      <tr>
+        <td>1ml Primobolam</td>
+        <td>Segunda / quinta</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!-- ... código HTML posterior ... -->
+</body>
+</html>

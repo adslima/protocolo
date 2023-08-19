@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Treinos</title>
+<style>
+  /* Adicione estilos CSS aqui */
+  body {
+    font-family: Arial, sans-serif;
+  }
+  h1 {
+    color: #333;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  .realizado {
+    text-decoration: line-through;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+  <h1>Registro de Treinos</h1>
+  
+  <label for="treinos">Escolha um treino:</label>
+  <select id="treinos">
+    <option value="a">Treino A - Peito/Ombros</option>
+    <option value="b">Treino B - Quadríceps</option>
+    <option value="c">Treino C - Dorsal</option>
+    <option value="d">Treino D - Deltóides</option>
+    <option value="e">Treino E - Bíceps/Tríceps</option>
+    <option value="f">Treino F - Femoral</option>
+  </select>
+  
+  <h2>Exercícios Realizados</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Exercício</th>
+        <th>Séries / Repetições</th>
+        <th>Intervalo</th>
+        <th>Observações e Metodologia</th>
+        <th>Realizado</th>
+      </tr>
+    </thead>
+    <tbody id="detalhesTreino">
+      <!-- Detalhes do treino aqui -->
+    </tbody>
+  </table>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const treinosSelect = document.getElementById("treinos");
+      const detalhesTreinoTable = document.getElementById("detalhesTreino");
+      const exerciciosStatus = {}; // Armazenar o status dos checkboxes
+      
+      treinosSelect.addEventListener("change", function() {
+        const treinoSelecionado = treinosSelect.value;
+        detalhesTreinoTable.innerHTML = ""; // Limpar a tabela de detalhes do treino
+        
+        const dadosTreino = obterDadosTreino(treinoSelecionado); // Função para obter os detalhes do treino
+        
+        dadosTreino.forEach(dado => {
+          const linha = document.createElement("tr");
+          const exercicioCelula = document.createElement("td");
+          const seriesRepeticoesCelula = document.createElement("td");
+          const intervaloCelula = document.createElement("td");
+          const observacoesCelula = document.createElement("td");
+          const realizadoCelula = document.createElement("td");
+          
+          exercicioCelula.textContent = dado.exercicio;
+          seriesRepeticoesCelula.textContent = dado.seriesRepeticoes;
+          intervaloCelula.textContent = dado.intervalo;
+          observacoesCelula.textContent = dado.observacoes;
+          
+          const realizadoCheckbox = document.createElement("input");
+          realizadoCheckbox.type = "checkbox";
+          realizadoCheckbox.addEventListener("change", function() {
+            // Atualizar o status do checkbox ao ser clicado
+            exerciciosStatus[dado.exercicio] = realizadoCheckbox.checked;
+            
+            // Atualizar a classe para aplicar riscado e cor quando o checkbox estiver marcado
+            if (realizadoCheckbox.checked) {
+              exercicioCelula.classList.add("realizado");
+            } else {
+              exercicioCelula.classList.remove("realizado");
+            }
+          });
+          
+          // Restaurar o status do checkbox
+          realizadoCheckbox.checked = exerciciosStatus[dado.exercicio] || false;
+          
+          realizadoCelula.appendChild(realizadoCheckbox);
+          
+          linha.appendChild(exercicioCelula);
+          linha.appendChild(seriesRepeticoesCelula);
+          linha.appendChild(intervaloCelula);
+          linha.appendChild(observacoesCelula);
+          linha.appendChild(realizadoCelula);
+          
+          detalhesTreinoTable.appendChild(linha);
+          
+          // Aplicar riscado e cor quando o exercício estiver marcado como realizado
+          if (exerciciosStatus[dado.exercicio]) {
+            exercicioCelula.classList.add("realizado");
+          }
+        });
+      });
+      
+      // Função simulada para obter os detalhes do treino selecionado
+      function obterDadosTreino(treinoSelecionado) {
+        // Dados reais para cada treino...
+        const dadosTreino = {
+          "a": [
+          { exercicio: "Barra fixa", seriesRepeticoes: "6x6", intervalo: "1 minuto", observacoes: "" },
+            { exercicio: "Flay Máquina", seriesRepeticoes: "4x10 + 1 x 4-8", intervalo: "60-90 segundos", observacoes: "Pegada superior" },
+            { exercicio: "Supino reto maquina", seriesRepeticoes: "4x10 + 1 x 3 a 6", intervalo: "60 a 120 segundos", observacoes: "Progressão de carga" },
+            { exercicio: "Crossover", seriesRepeticoes: "4x10", intervalo: "60 a 90 segundos", observacoes: "Cabos vindo de baixo" },
+            { exercicio: "Crossover Cabos na altura do peito", seriesRepeticoes: "4x10 + 1 x falha", intervalo: "60 a 90 segundos", observacoes: "Progressão em 4 Séries + 1 drop na última reduzindo 30% da carga total" },
+            { exercicio: "Elevação lateral No cabo pela frente", seriesRepeticoes: "6x10 a 12", intervalo: "90 segundos", observacoes: "Progredir Carga a cada 2 séries" },
+            { exercicio: "Elevação frontal Barra W", seriesRepeticoes: "4x8 + 8", intervalo: "90 segundos", observacoes: "Pegada supinada" },
+            { exercicio: "Abs infra", seriesRepeticoes: "3x15", intervalo: "60 segundos", observacoes: "" },
+            { exercicio: "Panturrilha", seriesRepeticoes: "6x falha", intervalo: "60 segundos", observacoes: "Progressão de carga" }
+            ],
+            "b": [
+            { exercicio: "Adutora", seriesRepeticoes: "3x20", intervalo: "90 segundos", observacoes: "Progressão de carga" },
+            { exercicio: "Agachamento livre", seriesRepeticoes: "4x10+ 1 x 4-6", intervalo: "120 segundos", observacoes: "Progressão de carga" },
+            // ... mais exercícios
+          ],
+          "c": [
+          { exercicio: "Adutora", seriesRepeticoes: "3x20", intervalo: "90 segundos", observacoes: "Progressão de carga" },
+            { exercicio: "Agachamento livre", seriesRepeticoes: "4x10+ 1 x 4-6", intervalo: "120 segundos", observacoes: "Progressão de carga" },
+ 
+            // ... mais exercícios
+          ],
+          "d": [
+          { exercicio: "Adutora", seriesRepeticoes: "3x20", intervalo: "90 segundos", observacoes: "Progressão de carga" },
+            { exercicio: "Agachamento livre", seriesRepeticoes: "4x10+ 1 x 4-6", intervalo: "120 segundos", observacoes: "Progressão de carga" },
+
+            // ... mais exercícios
+          ],
+          "e": [
+          { exercicio: "Adutora", seriesRepeticoes: "3x20", intervalo: "90 segundos", observacoes: "Progressão de carga" },
+            { exercicio: "Agachamento livre", seriesRepeticoes: "4x10+ 1 x 4-6", intervalo: "120 segundos", observacoes: "Progressão de carga" },
+
+            // ... mais exercícios
+          ],
+          "f": [
+          { exercicio: "Adutora", seriesRepeticoes: "3x20", intervalo: "90 segundos", observacoes: "Progressão de carga" },
+            { exercicio: "Agachamento livre", seriesRepeticoes: "4x10+ 1 x 4-6", intervalo: "120 segundos", observacoes: "Progressão de carga" },
+
+            // ... mais exercícios
+          ]
+        };
+        return dadosTreino[treinoSelecionado] || [];
+      }
+    });
+  </script>
+</body>
+</html>
